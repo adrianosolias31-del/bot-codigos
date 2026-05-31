@@ -18,14 +18,14 @@ def chat():
     msg = data.get("mensagem", "")
     if not GEMINI_API_KEY:
         return jsonify({"resposta": "Configure GEMINI_API_KEY!", "precisa_autorizacao": False})
-    
+
     modelos = ["gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-pro"]
-    
+
     for modelo in modelos:
         try:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{modelo}:generateContent?key={GEMINI_API_KEY}"
             payload = json.dumps({
-                "contents": [{"parts": [{"text": f"Responda em português natural e curto: {msg}"}]}]
+                "contents": [{"parts": [{"text": f"Responda em portugues natural e curto: {msg}"}]}]
             }).encode()
             req = urllib.request.Request(url, data=payload,
                 headers={"Content-Type": "application/json"})
@@ -38,7 +38,7 @@ def chat():
                 return jsonify({"resposta": f"Erro: {str(e)}", "precisa_autorizacao": False})
             time.sleep(2)
             continue
-    
+
     return jsonify({"resposta": "Limite atingido. Tente em 1 minuto.", "precisa_autorizacao": False})
 
 if __name__ == "__main__":
