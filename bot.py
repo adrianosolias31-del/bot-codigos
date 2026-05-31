@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import urllib.request
 import json
 
@@ -9,7 +9,7 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 @app.route("/")
 def home():
-    return "Bot funcionando!"
+    return render_template("index.html")
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -20,7 +20,7 @@ def chat():
     payload = json.dumps({
         "model": "llama3-8b-8192",
         "messages": [
-            {"role": "system", "content": "Responda em portugues de forma natural."},
+            {"role": "system", "content": "Responda em portugues de forma natural e curta."},
             {"role": "user", "content": msg}
         ],
         "max_tokens": 300
