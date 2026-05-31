@@ -19,7 +19,7 @@ def chat():
     if not GEMINI_API_KEY:
         return jsonify({"resposta": "Configure GEMINI_API_KEY!", "precisa_autorizacao": False})
     
-    modelos = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-pro"]
+    modelos = [modelos = ["gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-pro"]
     
     for modelo in modelos:
         try:
