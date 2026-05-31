@@ -5,7 +5,7 @@ import json
 
 app = Flask(__name__)
 
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
 @app.route("/")
 def home():
@@ -15,27 +15,23 @@ def home():
 def chat():
     data = request.get_json(force=True)
     msg = data.get("mensagem", "")
-    if not GROQ_API_KEY:
-        return jsonify({"resposta": "Configure GROQ_API_KEY!", "precisa_autorizacao": False})
+    if not GEMINI_API_KEY:
+        return jsonify({"resposta": "Configure GEMINI_API_KEY!", "precisa_autorizacao": False})
+    
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+    
     payload = json.dumps({
-        "model": "llama3-8b-8192",
-        "messages": [
-            {"role": "system", "content": "Responda em portugues de forma natural e curta."},
-            {"role": "user", "content": msg}
-        ],
-        "max_tokens": 300
+        "contents": [
+            {"parts": [{"text": f"Responda em português de forma natural e curta. Pergunta: {msg}"}]}
+        ]
     }).encode()
-    req = urllib.request.Request(
-        "https://api.groq.com/openai/v1/chat/completions",
-        data=payload,
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {GROQ_API_KEY}"
-        }
-    )
+    
+    req = urllib.request.Request(url, data=payload,
+        headers={"Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=15) as r:
-            resposta = json.loads(r.read())["choices"][0]["message"]["content"]
+            result = json.loads(r.read())
+            resposta = result["candidates"][0]["content"]["parts"][0]["text"]
     except Exception as e:
         resposta = f"Erro: {str(e)}"
     return jsonify({"resposta": resposta, "precisa_autorizacao": False})
