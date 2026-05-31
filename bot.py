@@ -1,8 +1,10 @@
-app=Flask(__name__)
-K=os.environ.get('GROQ_KEY','')
 import os
 from flask import Flask,request,jsonify
 import requests
+app=Flask(__name__)
+K=os.environ.get('GROQ_KEY','')
+U='https://api.groq.com/openai/v1/chat/completions'
+M='meta-llama/llama-4-scout-17b-16e-instruct'
 @app.route('/perguntar',methods=['POST'])
 def perguntar():
  p=request.json.get('pedido','')
