@@ -1,80 +1,49 @@
-  import re
-
-class ProcessadorBotVozAcelerado:
-    def __init__(self):
-        self.pontos_evolucao = 0      # Agora usamos pontos, não apenas cliques
-        self.nivel_evolucao = 0
-        self.limite_para_evoluir = 50  # Meta de pontos para o Próximo Nível
-        self.memoria_conhecimento = []
-
-    def processar_comando(self, texto_usuario, modo_auto_ativo=False):
-        """
-        Processador focado em ganho rápido de experiência e evolução.
-        """
-        texto_limpo = texto_usuario.lower().strip()
-        
-        # 1. Base de ganho por interação normal
-        pontos_ganhos = 5 
-        
-        # 2. ACELERAÇÃO 1: Bônus por busca de conhecimento profundo
-        if "pesquisar sobre" in texto_limpo or "estudar" in texto_limpo:
-            tema = re.sub(r'.*(pesquisar sobre|estudar)\s+', '', texto_limpo)
-            self.memoria_conhecimento.append(tema)
-            pontos_ganhos += 15  # Ganha +15 pontos por assunto complexo!
-            resposta = f"Processando novo conhecimento: '{tema}'."
-        
-        elif "devolução" in texto_limpo:
-            pontos_ganhos += 10  # Ganha +10 pontos por comandos estruturados
-            resposta = "Analisando dados de transação e devolução."
-            
-        else:
-            resposta = "Interação simples registrada."
-
-        # 3. ACELERAÇÃO 2: Multiplicador do Modo Auto
-        if modo_auto_ativo:
-            pontos_ganhos *= 2  # Dobra a velocidade de evolução se o Modo Auto estiver ligado!
-            resposta += " [MODO AUTO ATIVO: Aprendizado em dobro!]"
-
-        # Aplica os pontos ao processador
-        self.pontos_evolucao += pontos_ganhos
-        print(f"\n[Evolução] +{pontos_ganhos} pontos adquiridos. Total: {self.pontos_evolucao}/{self.limite_para_evoluir}")
-
-        # 4. Verifica se mudou de nível
-        subiu_nivel = self.verificar_evolucao()
-        
-        return {
-            "resposta": resposta,
-            "pontos_atuais": self.pontos_evolucao,
-            "meta_pontos": self.limite_para_evoluir,
-            "evolucoes": self.nivel_evolucao,
-            "subiu_nivel": subiu_nivel
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>BotVoz IA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-    def verificar_evolucao(self):
-        """
-        Gatilho rápido para subir o nível da IA
-        """
-        if self.pontos_evolucao >= self.limite_para_evoluir:
-            self.nivel_evolucao += 1
-            # Resesta os pontos mas mantém o excedente (ex: se tinha 55/50, sobra 5 para o próximo nível)
-            self.pontos_evolucao = self.pontos_evolucao - self.limite_para_evoluir
-            
-            # Ajusta a meta do próximo nível (crescimento gradual)
-            self.limite_para_evoluir = int(self.limite_para_evoluir * 1.5) 
-            return True
-        return False
-
-# --- TESTANDO A VELOCIDADE NO TERMINAL ---
-if __name__ == "__main__":
-    ia = ProcessadorBotVozAcelerado()
-    
-    # Simulação 1: Comando comum com MODO AUTO ligado
-    status = ia.processar_comando("devolução", modo_auto_ativo=True)
-    print(f"Status da IA -> Evoluções: {status['evolucoes']} | Pontos: {status['pontos_atuais']}/{status['meta_pontos']}")
-    
-    # Simulação 2: Comando de alto valor (Pesquisa) com MODO AUTO ligado -> Vai disparar a evolução!
-    status = ia.processar_comando("começar a pesquisar sobre matemática quântica", modo_auto_ativo=True)
-    print(f"Status da IA -> Evoluções: {status['evolucoes']} | Pontos: {status['pontos_atuais']}/{status['meta_pontos']}")
-    
-    if status['subiu_nivel']:
-        print("💥 SUCESSO: A IA acabou de evoluir de nível devido ao ganho acelerado!")
+        body {
+            background: #050a0f;
+            color: #c8d8e8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Barra de Status Superior */
+        #statusBar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(10, 20, 30, 0.8);
+            border-bottom: 1px solid #00e5ff;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .status-online {
+            color: #00ff66;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff66;
+            box-shadow: 0 0 8px #00ff66;
+            animation:
